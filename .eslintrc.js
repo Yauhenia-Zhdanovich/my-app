@@ -38,6 +38,10 @@ module.exports = {
     "@typescript-eslint/no-misused-promises": ["off"],
     "@typescript-eslint/strict-boolean-expressions": ["off"],
     "@typescript-eslint/consistent-type-definitions": ["off"],
+    "@typescript-eslint/member-delimiter-style": ["off"],
+    "@typescript-eslint/promise-function-async": ["off"],
+    "@typescript-eslint/no-non-null-assertion": ["warn"],
+    "@typescript-eslint/indent": ["off"],
   },
   globals: {
     JSX: true,

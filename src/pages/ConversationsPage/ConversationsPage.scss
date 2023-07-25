@@ -1,0 +1,39 @@
+.conversation-container {
+  display: flex;
+  height: 100vh;
+
+  .dialog-area {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 80px);
+    background-color: rgba(25, 118, 210, 0.2);
+  }
+
+  .conversations-list {
+    min-width: 200px;
+    overflow-y: scroll;
+
+    .conversation-item {
+      padding: 0;
+      
+      &.selected-conversation {
+        background-color: rgba(25, 118, 210, 0.2);
+      }
+    }
+  }
+
+  .no-selected-conversation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+
+  .unicorn-image {
+    display: block;
+    margin: 0 auto;
+    min-width: 200px;
+    max-width: 40%;
+  }
+}

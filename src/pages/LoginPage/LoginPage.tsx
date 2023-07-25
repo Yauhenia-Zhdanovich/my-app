@@ -1,19 +1,21 @@
 import {Button, TextField} from "@mui/material";
 import {Field, Form} from "react-final-form";
-
 import "./LoginPage.scss";
+import {useUser} from "../../globals/user/UserContext";
 
 type LoginFormValue = {
-  username: string
-  password: string
+  username: string;
+  password: string;
 };
 
 const requiredValidator = (value: string): string | undefined =>
   value ? undefined : "Required";
 
 export default function LoginPage(): JSX.Element {
+  const {login, users} = useUser();
+
   const onSubmit = (values: LoginFormValue): void => {
-    console.log(values, "submit");
+    login(users[1].id);
   };
 
   return (
@@ -22,7 +24,6 @@ export default function LoginPage(): JSX.Element {
       <Form
         onSubmit={onSubmit}
         render={({handleSubmit, hasValidationErrors}) => {
-          console.log(hasValidationErrors);
           return (
             <form className="login-form" onSubmit={handleSubmit}>
               <Field validate={requiredValidator} name="username">
