@@ -19,7 +19,7 @@ export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
 
   const onSubmit = (values: LoginFormValue): void => {
-    login(users[1].id);
+    login(users[users.length - 1].id);
   };
 
   useEffect(() => {
@@ -31,8 +31,9 @@ export default function LoginPage(): JSX.Element {
   }
 
   return (
-    <>
+    <div className="login">
       <h1>Login</h1>
+      <div className="hint">Hint: enter any string you want!</div>
       <Form
         onSubmit={onSubmit}
         render={({handleSubmit, hasValidationErrors}) => {
@@ -83,6 +84,6 @@ export default function LoginPage(): JSX.Element {
           );
         }}
       />
-    </>
+    </div>
   );
 }

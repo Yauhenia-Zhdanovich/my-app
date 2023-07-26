@@ -1,4 +1,4 @@
-import {createContext, useContext, useMemo} from "react";
+import {createContext, useContext, useMemo, useState} from "react";
 import type {User, UserContextType} from "./interfaces";
 import {useMutation, useQuery} from "react-query";
 import {useNavigate} from "react-router-dom";
@@ -41,10 +41,11 @@ export function UserProvider({
 }): JSX.Element {
   const navigate = useNavigate();
 
-  const isLoggedIn = useMemo(() => {
-    return Boolean(localStorage.getItem("isLoggedId"));
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(localStorage.getItem("isLoggedId")),
+  );
 
+  // Should've use InfiniteQuery here
   const {data: users, isLoading} = useQuery(["users"], fetchUsers);
 
   const loginMutation = useMutation<User, Error, number>(
@@ -60,16 +61,16 @@ export function UserProvider({
 
   const contextValue = useMemo(() => {
     return {
-      user: {
-        id: 1,
-        name: "wessel",
-        last_seen_at: "2023-07-25T16:12:44.000000Z",
-      },
+      user: users?.[users.length - 1],
       users: users ?? [],
       isLoading: loginMutation.isLoading || isLoading,
       error: loginMutation.error,
       login: loginMutation.mutate,
       isLoggedIn,
+      logout: () => {
+        setIsLoggedIn(false);
+        localStorage.removeItem("isLoggedId");
+      },
     };
   }, [loginMutation.isLoading, loginMutation.data, users, isLoading]);
 

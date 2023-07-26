@@ -3,7 +3,7 @@ import {useUser} from "../../../globals/user/UserContext";
 import useMessages from "../hooks/useMessages";
 import cx from "classnames";
 import "./ConversationItem.scss";
-import {CircularProgress, IconButton, TextField} from "@mui/material";
+import {IconButton, TextField} from "@mui/material";
 import {useState} from "react";
 import SendIcon from "@mui/icons-material/Send";
 import ErrorAlert from "../../../components/ErrorAlert";
@@ -32,7 +32,7 @@ export default function ConversationItem(): JSX.Element {
           style={{display: "flex", flexDirection: "column-reverse"}} // To put endMessage and loader to the top.
           inverse={true}
           hasMore={Boolean(hasNextPage)}
-          loader={<CircularProgress />}
+          loader={<span>Loading...</span>}
           scrollableTarget="scrollableDiv"
         >
           {messages.map((message) => {

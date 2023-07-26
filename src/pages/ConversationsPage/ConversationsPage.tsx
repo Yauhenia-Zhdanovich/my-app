@@ -9,6 +9,7 @@ import cx from "classnames";
 import {type Conversation} from "../../globals/interfaces";
 import ErrorAlert from "../../components/ErrorAlert";
 import Loader from "../../components/Loader";
+import ConversationHeader from "./ConversationHeader";
 
 export default function ConversationsPage(): JSX.Element {
   const {user, isLoading} = useUser();
@@ -23,6 +24,7 @@ export default function ConversationsPage(): JSX.Element {
   return (
     <div className="conversation-container">
       <List className="conversations-list">
+        <ConversationHeader />
         {conversations.map((conversation: Conversation) => (
           <ListItem
             key={conversation.id}
@@ -36,7 +38,8 @@ export default function ConversationsPage(): JSX.Element {
                 setConversationId(String(conversation.id));
               }}
             >
-              {conversation.name}
+              {conversation.members.find((member) => member.id !== user?.id)
+                ?.name ?? ""}
             </ListItemButton>
           </ListItem>
         ))}

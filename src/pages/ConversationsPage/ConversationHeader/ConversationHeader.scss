@@ -1,0 +1,13 @@
+.list-header {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  height: 100px;
+  padding: 10px;
+
+  .select-friend {
+    margin-top: 10px;
+    background-color: transparent;
+  }
+}
