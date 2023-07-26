@@ -1,76 +1,26 @@
-import {
-  type UseMutationResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
-import apiClient from "../../../globals/config/apiClient";
+import {useMutation, useQueryClient, useInfiniteQuery} from "react-query";
 import {type Message} from "../../../globals/interfaces";
-
-function fetchMessages(
-  userId: number,
-  conversationId: number,
-): Promise<Message[]> {
-  const url = `/user/${userId}/conversation/${conversationId}/message`;
-  return apiClient
-    .get(url)
-    .then(({data}) => data.data)
-    .catch(({response}) => {
-      const error: Error = {
-        name: `${response.status as string} error`,
-        message: "Something went wrong, please try again later",
-      };
-      throw error;
-    });
-}
-
-function sendMessage(
-  userId: number,
-  conversationId: number,
-  message: string,
-): Promise<Message> {
-  return apiClient
-    .post(`user/${userId}/conversation/${conversationId + 99}/message`, {
-      text: message,
-    })
-    .then(({data}) => data.data)
-    .catch(({response}) => {
-      const error: Error = {
-        name: `${response.status as string} error`,
-        message:
-          "Unfortunately, we wasn't able to send your message, please try again later",
-      };
-      throw error;
-    });
-}
-
-type MessagesResource = {
-  messages: Message[];
-  messageMutation: UseMutationResult<
-    Message,
-    Error,
-    MessageMutationParams,
-    unknown
-  >;
-};
-
-type MessageMutationParams = {
-  userId?: number;
-  conversationId?: number;
-  message?: string;
-};
+import {type MessageMutationParams, type MessagesResource} from "../interfaces";
+import {fetchMessages, sendMessage} from "../ConversationsService";
 
 export default function useMessages(
   userId?: number,
   conversationId?: number,
 ): MessagesResource {
   const queryClient = useQueryClient();
-
-  const {data} = useQuery(
+  // The API is a bit broken - lastPage.links.next is equal to the previous one after second loading
+  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery(
     ["messages", conversationId],
-    () => fetchMessages(userId!, conversationId!),
+    ({pageParam}) => {
+      return fetchMessages(userId!, conversationId!, pageParam);
+    },
     {
-      enabled: Boolean(userId) && Boolean(conversationId),
+      cacheTime: 0,
+      refetchOnWindowFocus: false,
+      getNextPageParam: (lastPage: any) => {
+        return lastPage.links.next;
+      },
+      enabled: Boolean(conversationId) && Boolean(userId),
     },
   );
 
@@ -82,17 +32,24 @@ export default function useMessages(
       onSuccess: (data) => {
         queryClient.setQueryData(
           ["messages", conversationId],
-          (oldData?: Message[]) => {
-            oldData?.unshift(data);
-            return oldData ? [...oldData] : [];
+          (oldData?: any) => {
+            const pagesLength = oldData.pages.length;
+            oldData.pages[pagesLength - 1].data.unshift(data);
+            return {...oldData};
           },
         );
       },
     },
   );
 
+  const messages = data?.pages
+    .map((response) => (response as any).data)
+    .flat(2);
+
   return {
-    messages: data ?? [],
+    messages: messages ?? [],
     messageMutation,
+    fetchNextPage,
+    hasNextPage,
   };
 }
