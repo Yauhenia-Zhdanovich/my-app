@@ -5,11 +5,29 @@ import {useNavigate} from "react-router-dom";
 import apiClient from "../config/apiClient";
 
 function login(userId: number): Promise<User> {
-  return apiClient.get(`/user/${userId}`).then(({data}) => data);
+  return apiClient
+    .get(`/user/${userId}`)
+    .then(({data}) => data)
+    .catch(({response}) => {
+      const error: Error = {
+        name: `${response.status as string} error`,
+        message: "Login error, please try again later",
+      };
+      throw error;
+    });
 }
 
 function fetchUsers(): Promise<User[]> {
-  return apiClient.get("user").then(({data}) => data.data);
+  return apiClient
+    .get("user")
+    .then(({data}) => data.data)
+    .catch(({response}) => {
+      const error: Error = {
+        name: `${response.status as string} error`,
+        message: "Error fetching users, please try again later",
+      };
+      throw error;
+    });
 }
 
 const UserContext = createContext<UserContextType>(
@@ -23,7 +41,11 @@ export function UserProvider({
 }): JSX.Element {
   const navigate = useNavigate();
 
-  const {data: users} = useQuery(["users"], fetchUsers);
+  const isLoggedIn = useMemo(() => {
+    return Boolean(localStorage.getItem("isLoggedId"));
+  }, []);
+
+  const {data: users, isLoading} = useQuery(["users"], fetchUsers);
 
   const loginMutation = useMutation<User, Error, number>(
     ["login"],
@@ -31,6 +53,7 @@ export function UserProvider({
     {
       onSuccess: () => {
         navigate("/conversations");
+        localStorage.setItem("isLoggedId", "true");
       },
     },
   );
@@ -43,11 +66,12 @@ export function UserProvider({
         last_seen_at: "2023-07-25T16:12:44.000000Z",
       },
       users: users ?? [],
-      isLoading: loginMutation.isLoading,
+      isLoading: loginMutation.isLoading || isLoading,
       error: loginMutation.error,
       login: loginMutation.mutate,
+      isLoggedIn,
     };
-  }, [loginMutation.isLoading, loginMutation.data, users]);
+  }, [loginMutation.isLoading, loginMutation.data, users, isLoading]);
 
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

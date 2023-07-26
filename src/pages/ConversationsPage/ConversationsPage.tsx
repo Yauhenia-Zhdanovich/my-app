@@ -7,12 +7,18 @@ import ConversationItem from "./ConversationItem";
 import {useUser} from "../../globals/user/UserContext";
 import cx from "classnames";
 import {type Conversation} from "../../globals/interfaces";
+import ErrorAlert from "../../components/ErrorAlert";
+import Loader from "../../components/Loader";
 
 export default function ConversationsPage(): JSX.Element {
-  const {user} = useUser();
+  const {user, isLoading} = useUser();
 
   const {conversationId, setConversationId} = useConversationId();
-  const {conversations} = useConversation(user?.id);
+  const {conversations, isError, error} = useConversation(user?.id);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="conversation-container">
@@ -44,6 +50,7 @@ export default function ConversationsPage(): JSX.Element {
           </div>
         )}
       </div>
+      {isError && error?.message && <ErrorAlert message={error?.message} />}
     </div>
   );
 }

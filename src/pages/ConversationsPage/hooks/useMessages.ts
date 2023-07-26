@@ -12,7 +12,16 @@ function fetchMessages(
   conversationId: number,
 ): Promise<Message[]> {
   const url = `/user/${userId}/conversation/${conversationId}/message`;
-  return apiClient.get(url).then(({data}) => data.data);
+  return apiClient
+    .get(url)
+    .then(({data}) => data.data)
+    .catch(({response}) => {
+      const error: Error = {
+        name: `${response.status as string} error`,
+        message: "Something went wrong, please try again later",
+      };
+      throw error;
+    });
 }
 
 function sendMessage(
@@ -21,17 +30,25 @@ function sendMessage(
   message: string,
 ): Promise<Message> {
   return apiClient
-    .post(`user/${userId}/conversation/${conversationId}/message`, {
+    .post(`user/${userId}/conversation/${conversationId + 99}/message`, {
       text: message,
     })
-    .then(({data}) => data.data);
+    .then(({data}) => data.data)
+    .catch(({response}) => {
+      const error: Error = {
+        name: `${response.status as string} error`,
+        message:
+          "Unfortunately, we wasn't able to send your message, please try again later",
+      };
+      throw error;
+    });
 }
 
 type MessagesResource = {
   messages: Message[];
   messageMutation: UseMutationResult<
     Message,
-    unknown,
+    Error,
     MessageMutationParams,
     unknown
   >;

@@ -2,6 +2,9 @@ import {Button, TextField} from "@mui/material";
 import {Field, Form} from "react-final-form";
 import "./LoginPage.scss";
 import {useUser} from "../../globals/user/UserContext";
+import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
+import Loader from "../../components/Loader";
 
 type LoginFormValue = {
   username: string;
@@ -12,14 +15,23 @@ const requiredValidator = (value: string): string | undefined =>
   value ? undefined : "Required";
 
 export default function LoginPage(): JSX.Element {
-  const {login, users} = useUser();
+  const {login, users, isLoggedIn, isLoading} = useUser();
+  const navigate = useNavigate();
 
   const onSubmit = (values: LoginFormValue): void => {
     login(users[1].id);
   };
 
+  useEffect(() => {
+    isLoggedIn && navigate("/conversations");
+  }, [isLoggedIn]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <div>
+    <>
       <h1>Login</h1>
       <Form
         onSubmit={onSubmit}
@@ -71,6 +83,6 @@ export default function LoginPage(): JSX.Element {
           );
         }}
       />
-    </div>
+    </>
   );
 }

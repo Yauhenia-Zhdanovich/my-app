@@ -42,6 +42,7 @@ module.exports = {
     "@typescript-eslint/promise-function-async": ["off"],
     "@typescript-eslint/no-non-null-assertion": ["warn"],
     "@typescript-eslint/indent": ["off"],
+    "react/prop-types": ["off"],
   },
   globals: {
     JSX: true,

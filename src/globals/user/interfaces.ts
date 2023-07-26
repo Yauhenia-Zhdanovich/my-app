@@ -12,4 +12,5 @@ export type UserContextType = {
   error: Error | null;
   login: UseMutateFunction<User, Error, number, unknown>;
   users: User[];
+  isLoggedIn: boolean;
 };

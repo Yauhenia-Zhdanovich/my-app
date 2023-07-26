@@ -6,6 +6,7 @@ import "./ConversationItem.scss";
 import {IconButton, TextField} from "@mui/material";
 import {useState} from "react";
 import SendIcon from "@mui/icons-material/Send";
+import ErrorAlert from "../../../components/ErrorAlert";
 
 export default function ConversationItem(): JSX.Element {
   const {conversationId} = useConversationId();
@@ -21,7 +22,7 @@ export default function ConversationItem(): JSX.Element {
   return (
     <>
       <div className="message-list">
-        {messages?.map((message) => {
+        {messages.map((message) => {
           return (
             <div
               key={message.id}
@@ -47,6 +48,9 @@ export default function ConversationItem(): JSX.Element {
         <IconButton onClick={onMessageSend} disabled={Boolean(!message)}>
           <SendIcon />
         </IconButton>
+        {messageMutation.isError && (
+          <ErrorAlert message={messageMutation.error.message} />
+        )}
       </div>
     </>
   );
