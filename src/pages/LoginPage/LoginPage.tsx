@@ -19,7 +19,7 @@ export default function LoginPage(): JSX.Element {
   const navigate = useNavigate();
 
   const onSubmit = (values: LoginFormValue): void => {
-    login(users[users.length - 1].id);
+    login(users[users?.length - 1]?.id);
   };
 
   useEffect(() => {
