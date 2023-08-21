@@ -1,4 +1,4 @@
-import {UseMutateFunction} from "react-query";
+import {type UseMutateFunction} from "react-query";
 
 export type User = {
   id: number;

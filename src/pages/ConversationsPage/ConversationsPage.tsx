@@ -48,7 +48,7 @@ export default function ConversationsPage(): JSX.Element {
         {Boolean(conversationId) && <ConversationItem />}
         {!conversationId && (
           <div className="no-selected-conversation">
-            <img className="unicorn-image" src={unicorn} />
+            <img className="unicorn-image" alt="unicorn" src={unicorn} />
             <h3>Choose the dialog</h3>
           </div>
         )}

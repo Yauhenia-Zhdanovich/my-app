@@ -43,6 +43,8 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": ["warn"],
     "@typescript-eslint/indent": ["off"],
     "react/prop-types": ["off"],
+    "@typescript-eslint/ban-types": ["off"],
+    "@typescript-eslint/block-spacing": ["off"],
   },
   globals: {
     JSX: true,

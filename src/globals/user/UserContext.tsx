@@ -30,7 +30,7 @@ function fetchUsers(): Promise<User[]> {
     });
 }
 
-const UserContext = createContext<UserContextType>(
+export const UserContext = createContext<UserContextType>(
   {} as unknown as UserContextType,
 );
 
@@ -59,7 +59,7 @@ export function UserProvider({
       onError: () => {
         navigate("/conversations");
         localStorage.setItem("isLoggedId", "true");
-      }
+      },
     },
   );
 
